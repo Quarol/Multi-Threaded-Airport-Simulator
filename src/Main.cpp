@@ -2,34 +2,38 @@
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <algorithm>
 
-
+#include "Constants.hpp"
 #include "Gate.hpp"
+#include "PassengerFactory.hpp"
+
+
 
 int main() {
-    Gate gate1, gate2;
-    std::vector<Passenger> passengers = {
-        Passenger("John", 25),
-        Passenger("Alice", 30),
-        Passenger("Bob", 40) 
-    };
+
+    std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
+    int nextId = 0;
+    for (auto& gate : gates) { gate.setId(nextId++); }
+
+    PassengerFactory* passengerFactory = new PassengerFactory;
+    std::vector<Passenger> passengers = passengerFactory->createMultiplePassengers(200);
 
     // Przydzia³ pasa¿erów do bramek
     std::vector<std::thread> passengerThreads;
-    for (Passenger& passenger : passengers) {
-        passengerThreads.emplace_back([&]() {
-            // Symulacja przydzia³u pasa¿erów do bramek
-            if (rand() % 2 == 0) {
-                gate1.assignPassenger(passenger);
-            }
-            else {
-                gate2.assignPassenger(passenger);
-            }
+    for (int i = 0; i < passengers.size(); i++)
+    {
+        int gateId = i % gates.size();
+        passengerThreads.emplace_back(
+            [gateId, i, &gates, &passengers]()
+            {
+                gates[gateId].assignPassenger(passengers[i]);
             });
     }
 
     // Czekanie na zakoñczenie w¹tków pasa¿erów
-    for (auto& passengerThread : passengerThreads) {
+    for (auto& passengerThread : passengerThreads) 
+    {
         passengerThread.join();
     }
 

@@ -9,16 +9,17 @@ class Gate
 {
 public:
 	Gate();
-
-	void occupyGate();
-	void releaseGate();
 	void assignPassenger(Passenger& passenger);
-
+	void setId(int id);
 
 private:
-	const int CHECKIN_TIME = 2;
-	
+	void occupyGate();
+	void releaseGate();
+
+private:
 	std::mutex gateMutex_;
-	std::condition_variable gateAvailable_;
+	std::condition_variable gateAvailableCV_;
+
+	int id_;
 	bool isAvailable_ = true;
 };
