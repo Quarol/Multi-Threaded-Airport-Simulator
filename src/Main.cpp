@@ -3,23 +3,24 @@
 #include <mutex>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "Constants.hpp"
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
 
-
-
-int main() {
-
+int main() 
+{
     std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
     int nextId = 0;
-    for (auto& gate : gates) { gate.setId(nextId++); }
+    for (auto& gate : gates)
+        gate.setId(nextId++);
 
-    PassengerFactory* passengerFactory = new PassengerFactory;
+    auto passengerFactory = std::make_shared<PassengerFactory>();
+
     std::vector<Passenger> passengers = passengerFactory->createMultiplePassengers(200);
 
-    // Przydzia³ pasa¿erów do bramek
+    // Assining passengers to gates
     std::vector<std::thread> passengerThreads;
     for (int i = 0; i < passengers.size(); i++)
     {
@@ -31,11 +32,9 @@ int main() {
             });
     }
 
-    // Czekanie na zakoñczenie w¹tków pasa¿erów
+    // Waiting for passenger threads to end
     for (auto& passengerThread : passengerThreads) 
-    {
         passengerThread.join();
-    }
 
     return 0;
 }

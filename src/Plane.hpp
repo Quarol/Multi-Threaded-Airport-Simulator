@@ -6,4 +6,9 @@ public:
 
 
 
+
+	void setId(int id);
+private:
+	int id_;
+	
 };
