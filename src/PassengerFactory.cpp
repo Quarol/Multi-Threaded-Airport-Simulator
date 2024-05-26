@@ -9,7 +9,7 @@ std::vector<Passenger> PassengerFactory::createMultiplePassengers(int numberOfPa
 
 	for (int i = 0; i < numberOfPassengers; i++)
 	{
-		passengers.push_back(Passenger(randomNames_[i % numberOfPassengers], 20));
+		passengers.push_back(Passenger(randomNames_[i % numberOfPassengers], i));
 	}
 
 	return passengers;

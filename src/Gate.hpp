@@ -2,18 +2,23 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <queue>
+#include <functional>
 
 #include "Passenger.hpp"
 
-class Gate 
+class Gate
 {
+	using priorityAndThread = std::pair<int, std::function<void()>>;
+
 public:
 	Gate();
 	void assignPassenger(Passenger& passenger);
 	void setId(int id);
+	void release();
 
 private:
-	void occupyGate();
+	void occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime);
 	void releaseGate();
 
 private:

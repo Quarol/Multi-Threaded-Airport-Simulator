@@ -9,7 +9,7 @@
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
 
-int main() 
+int main()
 {
     std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
     int nextId = 0;
@@ -18,7 +18,7 @@ int main()
 
     auto passengerFactory = std::make_shared<PassengerFactory>();
 
-    std::vector<Passenger> passengers = passengerFactory->createMultiplePassengers(200);
+    std::vector<Passenger> passengers = passengerFactory->createMultiplePassengers(Constants::NUMBERS_OF_PASSENGERS);
 
     // Assining passengers to gates
     std::vector<std::thread> passengerThreads;
@@ -33,7 +33,7 @@ int main()
     }
 
     // Waiting for passenger threads to end
-    for (auto& passengerThread : passengerThreads) 
+    for (auto& passengerThread : passengerThreads)
         passengerThread.join();
 
     return 0;

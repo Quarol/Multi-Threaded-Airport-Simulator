@@ -20,12 +20,12 @@ int Passenger::getAge() const
 	return age_;
 }
 
-bool Passenger::canYield() const
-{
-	return yieldCounter_ < YIELD_LIMIT;
-}
-
-void Passenger::yield() const
-{
-	yieldCounter_++;
-}
+//bool Passenger::canYield() const
+//{
+//	return yieldCounter_ < YIELD_LIMIT;
+//}
+//
+//void Passenger::yield() const
+//{
+//	yieldCounter_++;
+//}

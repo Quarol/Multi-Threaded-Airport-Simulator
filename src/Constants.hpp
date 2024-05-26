@@ -3,7 +3,8 @@
 class Constants 
 {
 public:
-	static const int NUMBER_OF_GATES = 10; // NUMBER_OF_GATES = NUMBER_OF_PLANES
-	static const int CHECKIN_TIME = 1;
-	static const int YIELD_LIMIT = 3;
+    static constexpr int NUMBER_OF_GATES = 5;
+    static constexpr int NUMBERS_OF_PASSENGERS = 1000;
+    static constexpr int CHECKIN_TIME = 2;
+    static constexpr int MAX_WAIT_TIME = 20;
 };

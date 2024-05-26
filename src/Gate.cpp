@@ -16,14 +16,14 @@ Gate::Gate()
 {
 }
 
-void Gate::occupyGate() 
-{
+void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime) {
     std::unique_lock<std::mutex> lock(gateMutex_);
+    startTime = std::chrono::steady_clock::now();
     gateAvailableCV_.wait(lock, [this]() { return isAvailable_; });
     isAvailable_ = false;
 }
 
-void Gate::releaseGate() 
+void Gate::releaseGate()
 {
     {
         std::lock_guard<std::mutex> lock(gateMutex_);
@@ -32,11 +32,21 @@ void Gate::releaseGate()
     gateAvailableCV_.notify_one();
 }
 
-void Gate::assignPassenger(Passenger& passenger) 
-{
-    occupyGate();
-    std::cout << "Passenger: " << passenger.getName() << ", assigned to gate: " << id_ << std::endl;
+void Gate::assignPassenger(Passenger& passenger) {
+    std::chrono::time_point<std::chrono::steady_clock> startTime;
+    occupyGate(startTime);
+
+    auto endTime = std::chrono::steady_clock::now();
+    auto waitingTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+
+    std::cout << "Passenger: " << passenger.getName() << ", assigned to gate: " << id_
+        << ", waited for: " << waitingTime << " ms" << std::endl;
+
     std::this_thread::sleep_for(std::chrono::seconds(Constants::CHECKIN_TIME));
+    releaseGate();
+}
+
+void Gate::release() {
     releaseGate();
 }
 
