@@ -15,7 +15,6 @@ public:
 	Gate();
 	void assignPassenger(Passenger& passenger);
 	void setId(int id);
-	void release();
 
 private:
 	void occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime);

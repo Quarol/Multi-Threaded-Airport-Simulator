@@ -46,10 +46,6 @@ void Gate::assignPassenger(Passenger& passenger) {
     releaseGate();
 }
 
-void Gate::release() {
-    releaseGate();
-}
-
 void Gate::setId(int id)
 {
     id_ = id;
