@@ -8,6 +8,7 @@ class PassengerFactory
 {
 public:
 	std::vector<Passenger> createMultiplePassengers(int numberOfPassengers);
+    std::vector<Passenger> createMultiplePassengersWithLogger(int numberOfPassengers);
 
 private:
     const std::vector<std::string> randomNames_ = {
