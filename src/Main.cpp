@@ -9,32 +9,72 @@
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
 
+std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
+auto passengerFactory = std::make_shared<PassengerFactory>();
+bool wasTyped = false;
+int numberOfPassengers = 0;
+
+int selectGateNumber(int i)
+{
+    int temp = numberOfPassengers * i;
+    return i % gates.size();
+}
+
+void addPassengers(int numberOfPassengers)
+{
+    std::vector<Passenger> passengers = passengerFactory->createMultiplePassengersWithLogger(numberOfPassengers);
+
+    // Assigning passengers to gates
+    std::vector<std::thread> passengerThreads;
+    for (int i = 0; i < passengers.size(); i++)
+    {
+        int gateid = selectGateNumber(i);
+
+        std::thread(
+            [gateid, passenger = std::move(passengers[i])]() mutable {
+            gates[gateid].assignPassenger(passenger);
+        }
+        ).detach();
+
+    }
+}
+
+void userInput()
+{
+    while (true)
+    {
+        std::string input;
+        std::cin >> input;
+
+        if (input[0] == 'p') {
+            numberOfPassengers = std::stoi(input.substr(1, input.length()-1));
+            wasTyped = true;
+        }
+
+        if (input[1] == 'a') {
+            ;
+        }
+    }
+}
+
 int main()
 {
-    std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
     int nextId = 0;
     for (auto& gate : gates)
         gate.setId(nextId++);
 
-    auto passengerFactory = std::make_shared<PassengerFactory>();
+    std::thread inputThread(userInput);
 
-    std::vector<Passenger> passengers = passengerFactory->createMultiplePassengers(Constants::NUMBERS_OF_PASSENGERS);
-
-    // Assining passengers to gates
-    std::vector<std::thread> passengerThreads;
-    for (int i = 0; i < passengers.size(); i++)
+    while (true)
     {
-        int gateId = i % gates.size();
-        passengerThreads.emplace_back(
-            [gateId, i, &gates, &passengers]()
-            {
-                gates[gateId].assignPassenger(passengers[i]);
-            });
+        if (wasTyped)
+        {
+            wasTyped = false;
+            std::thread(addPassengers, numberOfPassengers).detach();
+        }
     }
 
-    // Waiting for passenger threads to end
-    for (auto& passengerThread : passengerThreads)
-        passengerThread.join();
+    inputThread.join();
 
     return 0;
 }
