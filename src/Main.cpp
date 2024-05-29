@@ -11,6 +11,7 @@
 
 int main()
 {
+    std::cout << "test";
     std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
     int nextId = 0;
     for (auto& gate : gates)
