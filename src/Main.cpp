@@ -8,6 +8,7 @@
 #include "Constants.hpp"
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
+#include "Plane.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
 auto passengerFactory = std::make_shared<PassengerFactory>();
@@ -30,12 +31,15 @@ void addPassengers(int numberOfPassengers)
     {
         int gateid = selectGateNumber(i);
 
-        std::thread(
+        passengerThreads.emplace_back(
             [gateid, passenger = std::move(passengers[i])]() mutable {
-            gates[gateid].assignPassenger(passenger);
-        }
-        ).detach();
+                gates[gateid].assignPassenger(passenger);
+            });
 
+    }
+
+    for (auto& thread : passengerThreads) {
+        thread.join();
     }
 }
 
@@ -47,12 +51,12 @@ void userInput()
         std::cin >> input;
 
         if (input[0] == 'p') {
-            numberOfPassengers = std::stoi(input.substr(1, input.length()-1));
+            numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
             wasTyped = true;
         }
 
-        if (input[1] == 'a') {
-            ;
+        if (input[0] == 'a') {
+            // TODO: add flight threads and plane class
         }
     }
 }
