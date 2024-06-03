@@ -1,5 +1,10 @@
+#pragma once
+#include <string>
+
 class Utils
 {
 public:
-	static int generate_random_number();
+    static int generateRandomNumber();
+    static std::string addBrackets(const std::string& str);
+    static std::string addBrackets(int number);
 };

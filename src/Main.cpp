@@ -9,11 +9,13 @@
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
 #include "Plane.hpp"
+#include "Counter.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
 auto passengerFactory = std::make_shared<PassengerFactory>();
 bool wasTyped = false;
 int numberOfPassengers = 0;
+auto counter = std::make_shared<Counter>();
 
 int selectGateNumber(int i)
 {
@@ -35,7 +37,6 @@ void addPassengers(int numberOfPassengers)
             [gateid, passenger = std::move(passengers[i])]() mutable {
                 gates[gateid].assignPassenger(passenger);
             });
-
     }
 
     for (auto& thread : passengerThreads) {
@@ -50,13 +51,20 @@ void userInput()
         std::string input;
         std::cin >> input;
 
-        if (input[0] == 'p') {
+        if (input[0] == 'p') 
+        {
             numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
             wasTyped = true;
         }
 
-        if (input[0] == 'a') {
-            // TODO: add flight threads and plane class
+        if (input[0] == 'a') 
+        {
+            int numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
+            for (auto& gate : gates) 
+            {
+                for (int i = 0; i < numberOfPlanes; ++i)
+                    gate.addPlane();
+            }
         }
     }
 }
@@ -66,6 +74,10 @@ int main()
     int nextId = 0;
     for (auto& gate : gates)
         gate.setId(nextId++);
+
+    for (auto& gate : gates) {
+        gate = Gate(counter);
+    }
 
     std::thread inputThread(userInput);
 

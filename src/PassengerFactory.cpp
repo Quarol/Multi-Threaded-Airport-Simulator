@@ -22,7 +22,7 @@ std::vector<Passenger> PassengerFactory::createMultiplePassengersWithLogger(int 
 	for (int i = 0; i < numberOfPassengers; i++)
 	{
 		std::stringstream ss;
-		ss << "Passenger [" << numberOfPassengers << "]";
+		ss << numberOfPassengers;
 		std::string passengerName = ss.str();
 		passengers.push_back(Passenger(passengerName, i));
 	}

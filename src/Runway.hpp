@@ -3,7 +3,12 @@
 class Runway 
 {
 public:
+	void addNewWaitingPerson() 
+	{
+	}
 
 
+
+private:
 
 };
