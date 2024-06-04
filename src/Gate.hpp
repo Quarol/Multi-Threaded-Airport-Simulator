@@ -5,25 +5,32 @@
 #include <vector>
 #include "Passenger.hpp"
 #include "Plane.hpp"
-#include "Counter.hpp"
+#include "Runway.hpp"
 
-class Gate {
+class Gate 
+{
 public:
     Gate();
-    void setId(int id);
     void assignPassenger(Passenger& passenger);
-    std::mutex& getMutex();
     void addPlane();
     int getPassengerCount();
 
+public:
+    void setId(int id);
+    void setRunway(std::shared_ptr<Runway> runway);
+    std::mutex& getMutex();
+    //std::vector<std::unique_ptr<Plane>> planes_;
+    std::shared_ptr<Runway> runway_;
+
 private:
-    int id_;
-    bool isAvailable_;
-    int passengerCount_;
-    std::mutex gateMutex_;
-    std::condition_variable gateAvailableCV_;
     void occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime);
     void releaseGate();
-    std::vector<std::unique_ptr<Plane>> planes_;
-    std::shared_ptr<Counter> counter_;
+
+    int id_;
+    int passengerCount_;
+
+    bool isAvailable_;
+  
+    std::mutex gateMutex_;
+    std::condition_variable gateAvailableCV_;
 };

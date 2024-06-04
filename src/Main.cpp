@@ -9,17 +9,15 @@
 #include "Gate.hpp"
 #include "PassengerFactory.hpp"
 #include "Plane.hpp"
-#include "Counter.hpp"
+#include "Runway.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
+auto runway = std::make_shared<Runway>();
 auto passengerFactory = std::make_shared<PassengerFactory>();
-bool wasTyped = false;
-int numberOfPassengers = 0;
-auto counter = std::make_shared<Counter>();
+
 
 int selectGateNumber(int i)
 {
-    int temp = numberOfPassengers * i;
     return i % gates.size();
 }
 
@@ -39,7 +37,33 @@ void addPassengers(int numberOfPassengers)
             });
     }
 
-    for (auto& thread : passengerThreads) {
+    for (auto& thread : passengerThreads) 
+    {
+        thread.join();
+    }
+}
+
+void addPlanes(int numberOfPlanes) 
+{
+    std::vector<Plane> planes;
+
+    for (int i = 0; i < numberOfPlanes; i++)
+    {
+        planes.push_back(Plane(i, i));
+    }
+
+    std::vector<std::thread> planeThreads(numberOfPlanes);
+    for (int i = 0; i < numberOfPlanes; i++)
+    {
+        planeThreads.emplace_back(
+            [i, &planes]()
+            {
+                planes[i].start(runway);
+            });
+    }
+
+    for (auto& thread : planeThreads)
+    {
         thread.join();
     }
 }
@@ -53,18 +77,14 @@ void userInput()
 
         if (input[0] == 'p') 
         {
-            numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
-            wasTyped = true;
+            int numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
+            std::thread(addPassengers, numberOfPassengers).detach();
         }
 
         if (input[0] == 'a') 
         {
             int numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
-            for (auto& gate : gates) 
-            {
-                for (int i = 0; i < numberOfPlanes; ++i)
-                    gate.addPlane();
-            }
+            std::thread(addPlanes, numberOfPlanes).detach();
         }
     }
 }
@@ -73,12 +93,13 @@ int main()
 {
     int nextId = 0;
     for (auto& gate : gates)
+    {
         gate.setId(nextId++);
-
-    for (auto& gate : gates) {
-        gate = Gate(counter);
+        gate.setRunway(runway);
     }
-
+    
+    
+    /*
     std::thread inputThread(userInput);
 
     while (true)
@@ -89,8 +110,27 @@ int main()
             std::thread(addPassengers, numberOfPassengers).detach();
         }
     }
-
     inputThread.join();
+    */
+
+    
+    while (true)
+    {
+        std::string input;
+        std::cin >> input;
+
+        if (input[0] == 'p') 
+        {
+            int numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
+            std::thread(addPassengers, numberOfPassengers).detach();
+        }
+
+        if (input[0] == 'a') 
+        {
+            int numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
+            std::thread(addPlanes, numberOfPlanes).detach();
+        }
+    }
 
     return 0;
 }

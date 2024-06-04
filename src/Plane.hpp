@@ -4,19 +4,22 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "Runway.hpp"
+
 class Plane {
 public:
+    Plane();
     Plane(int id, int gateId);
-    Plane(const Plane&) = delete; // Delete copy constructor
-    Plane& operator=(const Plane&) = delete; // Delete copy assignment operator
-    void addPassenger();
-    void start(std::shared_ptr<Counter> counter);
+    void start(std::shared_ptr<Runway> runway);
     void land();
+
+public:
+    //void setRunway(std::shared_ptr<Runway> runway);
+
 private:
     int id_;
     int gateId_;
     int passengerCount_;
-    std::mutex planeMutex_;
-    std::condition_variable planeCV_;
     bool readyToStart_;
+    std::shared_ptr<Runway> runway_;
 };
