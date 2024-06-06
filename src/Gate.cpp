@@ -1,4 +1,5 @@
 #include "Gate.hpp"
+
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -13,8 +14,7 @@ Gate::Gate()
     : id_(1)
     , isAvailable_(true)
     , passengerCount_(0)
-{
-}
+{}
 
 void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime) 
 {
@@ -29,10 +29,7 @@ void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startT
 
 void Gate::releaseGate()
 {
-    {
-        std::lock_guard<std::mutex> lock(gateMutex_);
-        isAvailable_ = true;
-    }
+    isAvailable_ = true;
     gateAvailableCV_.notify_all();
 }
 
@@ -44,7 +41,8 @@ void Gate::assignPassenger(Passenger& passenger)
     auto endTime = std::chrono::steady_clock::now();
     auto waitingTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
-    std::cout << "Passenger: " << Utils::addBrackets(passenger.getName()) << ", assigned to gate: " << Utils::addBrackets(id_)
+    std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
+        << ", assigned to gate " << Utils::addBrackets(id_)
         << ", waited for: " << waitingTime << " ms" << std::endl;
 
     std::this_thread::sleep_for(std::chrono::seconds(Constants::CHECKIN_TIME));
@@ -55,25 +53,27 @@ void Gate::assignPassenger(Passenger& passenger)
     passengerCount_++;
 }
 
-void Gate::addPlane() 
+void Gate::setId(int id) 
 {
-   /* int newPlaneId = planes_.size();
-    planes_.emplace_back(std::make_unique<Plane>(newPlaneId, id_));*/
-}
-
-void Gate::setId(int id) {
     id_ = id;
 }
 
-std::mutex& Gate::getMutex() {
+void Gate::setRunway(std::shared_ptr<Runway> runway)
+{
+    runway_ = runway;
+}
+
+std::mutex& Gate::getMutex() 
+{
     return gateMutex_;
 }
 
-int Gate::getPassengerCount() {
+int Gate::getPassengerCount() 
+{
     return passengerCount_;
 }
 
-void Gate::setRunway(std::shared_ptr<Runway> runway) 
+std::shared_ptr<Runway> Gate::getRunway()
 {
-    runway_ = runway;
+    return runway_;
 }

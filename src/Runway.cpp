@@ -1,5 +1,6 @@
 
 #include "Runway.hpp"
+
 #include <iostream>
 
 Runway::Runway(int id)
@@ -22,7 +23,8 @@ void Runway::movePassengersToPlane(int numberOfPassengers)
 
 	passengersPastGates_ -= numberOfPassengers;
 
-	std::cout << "Moved " << numberOfPassengers << " passengers from runway to plane. Remaining: " << passengersPastGates_ << std::endl;
+	std::cout << "Moved: " << numberOfPassengers << " passengers from runway to plane" 
+		<< ", Remaining: " << passengersPastGates_ << std::endl;
 	runwayAvailableCV_.notify_all();
 }
 

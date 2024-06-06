@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -9,17 +10,14 @@
 class Plane {
 public:
     Plane();
-    Plane(int id, int gateId);
+    Plane(int id);
     void start(std::shared_ptr<Runway> runway);
     void land();
 
-public:
-    //void setRunway(std::shared_ptr<Runway> runway);
-
 private:
     int id_;
-    int gateId_;
     int passengerCount_;
     bool readyToStart_;
+
     std::shared_ptr<Runway> runway_;
 };

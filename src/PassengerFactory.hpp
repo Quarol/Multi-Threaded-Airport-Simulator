@@ -11,7 +11,8 @@ public:
     std::vector<Passenger> createMultiplePassengersWithLogger(int numberOfPassengers);
 
 private:
-    const std::vector<std::string> randomNames_ = {
+    const std::vector<std::string> randomNames_ = 
+    {
     "Aaron",      "Abdul",    "Abdullah",  "Adam",       "Adrian",     "Adriano",     "Ahmad",     "Ahmed",
     "Ahmet",      "Alan",     "Albert",    "Alessandro", "Alessio",    "Alex",        "Alexander", "Alfred",
     "Ali",        "Amar",     "Amir",      "Amon",       "Andre",      "Andreas",     "Andrew",    "Angelo",

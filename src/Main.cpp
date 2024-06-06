@@ -15,7 +15,6 @@ std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
 auto runway = std::make_shared<Runway>(1);
 auto passengerFactory = std::make_shared<PassengerFactory>();
 
-
 int selectGateNumber(int i)
 {
     return i % gates.size();
@@ -32,7 +31,9 @@ void addPassengers(int numberOfPassengers)
         int gateid = selectGateNumber(i);
 
         passengerThreads.emplace_back(
-            [gateid, passenger = std::move(passengers[i])]() mutable {
+            [gateid, passenger = std::move(passengers[i])]
+            () mutable 
+            {
                 gates[gateid].assignPassenger(passenger);
             });
     }
@@ -49,9 +50,8 @@ void addPlanes(int numberOfPlanes)
 
     for (int i = 0; i < numberOfPlanes; i++)
     {
-        planes.push_back(Plane(i, i));
+        planes.push_back(Plane(i));
     }
-    std::cout << "RUNWAY ID: " << runway->id_;
 
     std::vector<std::thread> planeThreads;
     for (int i = 0; i < numberOfPlanes; i++)
@@ -69,27 +69,6 @@ void addPlanes(int numberOfPlanes)
     }
 }
 
-void userInput()
-{
-    while (true)
-    {
-        std::string input;
-        std::cin >> input;
-
-        if (input[0] == 'p') 
-        {
-            int numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
-            std::thread(addPassengers, numberOfPassengers).detach();
-        }
-
-        if (input[0] == 'a') 
-        {
-            int numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
-            std::thread(addPlanes, numberOfPlanes).detach();
-        }
-    }
-}
-
 int main()
 {
     int nextId = 0;
@@ -98,23 +77,7 @@ int main()
         gate.setId(nextId++);
         gate.setRunway(runway);
     }
-    
-    
-    /*
-    std::thread inputThread(userInput);
-
-    while (true)
-    {
-        if (wasTyped)
-        {
-            wasTyped = false;
-            std::thread(addPassengers, numberOfPassengers).detach();
-        }
-    }
-    inputThread.join();
-    */
-
-    
+   
     while (true)
     {
         std::string input;
