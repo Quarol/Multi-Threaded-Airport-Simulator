@@ -6,19 +6,18 @@
 class Runway 
 {
 public:
-	Runway();
+	Runway(int id);
 	void addPassengersPastGates(int numberOfPassenger);
 	void movePassengersToPlane(int numberOfPassenger);
 	int getPassengersPastGates();
 
+	int id_;
 private:
-	void unlockMutex();
-	void lockMutex(int numberOfPassengers);
 
-private:
 	int passengersPastGates_;
 	bool isAvailable_;
 
 	std::mutex runwayMutex_;
 	std::condition_variable runwayAvailableCV_;
+
 };

@@ -12,7 +12,7 @@
 #include "Runway.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
-auto runway = std::make_shared<Runway>();
+auto runway = std::make_shared<Runway>(1);
 auto passengerFactory = std::make_shared<PassengerFactory>();
 
 
@@ -51,8 +51,9 @@ void addPlanes(int numberOfPlanes)
     {
         planes.push_back(Plane(i, i));
     }
+    std::cout << "RUNWAY ID: " << runway->id_;
 
-    std::vector<std::thread> planeThreads(numberOfPlanes);
+    std::vector<std::thread> planeThreads;
     for (int i = 0; i < numberOfPlanes; i++)
     {
         planeThreads.emplace_back(
