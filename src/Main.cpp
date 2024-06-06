@@ -5,11 +5,11 @@
 #include <algorithm>
 #include <memory>
 
-#include "Constants.hpp"
-#include "Gate.hpp"
-#include "PassengerFactory.hpp"
 #include "Plane.hpp"
+#include "Gate.hpp"
 #include "Runway.hpp"
+#include "PassengerFactory.hpp"
+#include "Constants.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
 auto runway = std::make_shared<Runway>(1);
@@ -71,6 +71,9 @@ void addPlanes(int numberOfPlanes)
 
 int main()
 {
+    int numberOfPassengers;
+    int numberOfPlanes;
+
     int nextId = 0;
     for (auto& gate : gates)
     {
@@ -83,16 +86,17 @@ int main()
         std::string input;
         std::cin >> input;
 
-        if (input[0] == 'p') 
+        switch (input[0])
         {
-            int numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
-            std::thread(addPassengers, numberOfPassengers).detach();
-        }
+            case 'p':
+                numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
+                std::thread(addPassengers, numberOfPassengers).detach();
+                break;
 
-        if (input[0] == 'a') 
-        {
-            int numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
-            std::thread(addPlanes, numberOfPlanes).detach();
+            case 'a':
+                numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
+                std::thread(addPlanes, numberOfPlanes).detach();
+                break;
         }
     }
 

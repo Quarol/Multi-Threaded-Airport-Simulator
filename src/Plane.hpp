@@ -11,6 +11,7 @@ class Plane {
 public:
     Plane();
     Plane(int id);
+
     void start(std::shared_ptr<Runway> runway);
     void land();
 

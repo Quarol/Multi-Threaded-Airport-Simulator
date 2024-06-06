@@ -7,13 +7,13 @@ class Runway
 {
 public:
 	Runway(int id);
+
 	void addPassengersPastGates(int numberOfPassenger);
 	void movePassengersToPlane(int numberOfPassenger);
 	int getPassengersPastGates();
 
-	int id_;
 private:
-
+	int id_;
 	int passengersPastGates_;
 	bool isAvailable_;
 
