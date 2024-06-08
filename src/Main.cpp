@@ -10,6 +10,7 @@
 #include "Runway.hpp"
 #include "PassengerFactory.hpp"
 #include "Constants.hpp"
+#include "Utils.hpp"
 
 std::vector<Gate> gates(Constants::NUMBER_OF_GATES);
 auto runway = std::make_shared<Runway>(1);
@@ -22,9 +23,9 @@ int selectGateNumber(int i)
 
 void addPassengers(int numberOfPassengers)
 {
+    std::cout << "Starting to add " << Utils::addBrackets(numberOfPassengers) << " passengers" << std::endl;
     std::vector<Passenger> passengers = passengerFactory->createMultiplePassengersWithLogger(numberOfPassengers);
 
-    // Assigning passengers to gates
     std::vector<std::thread> passengerThreads;
     for (int i = 0; i < passengers.size(); i++)
     {
@@ -42,6 +43,8 @@ void addPassengers(int numberOfPassengers)
     {
         thread.join();
     }
+
+    std::cout << "Finished to add " << Utils::addBrackets(numberOfPassengers) << " passengers" << std::endl;
 }
 
 void addPlanes(int numberOfPlanes) 

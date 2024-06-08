@@ -9,8 +9,6 @@ Passenger::Passenger(const std::string& name, const int age)
 	: name_(name)
 	, age_(age)
 {
-	std::cout << "Passenger " << Utils::addBrackets(name_)  
-		<< ", Age " << age_ << std::endl;
 }
 
 std::string Passenger::getName() const
