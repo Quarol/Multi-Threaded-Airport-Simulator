@@ -23,7 +23,7 @@ public:
     std::shared_ptr<Runway> getRunway();
    
 private:
-    void occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime);
+    void occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime, bool& timedOut);
     void releaseGate();
 
 private:

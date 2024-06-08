@@ -16,15 +16,22 @@ Gate::Gate()
     , passengerCount_(0)
 {}
 
-void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime) 
+void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime, bool& timedOut) 
 {
     //std::this_thread::sleep_for(std::chrono::seconds(Utils::generateRandomNumber()));
     std::unique_lock<std::mutex> lock(gateMutex_);
 
     startTime = std::chrono::steady_clock::now();
+    auto timeout = std::chrono::seconds(Constants::MAX_WAIT_TIME);
 
-    gateAvailableCV_.wait(lock, [this]() { return isAvailable_; });
+    if (!gateAvailableCV_.wait_for(lock, timeout, [this]() { return isAvailable_; })) {
+        // Timeout occurred
+        timedOut = true;
+        return;
+    }
+
     isAvailable_ = false;
+    timedOut = false;
 }
 
 void Gate::releaseGate()
@@ -35,11 +42,25 @@ void Gate::releaseGate()
 
 void Gate::assignPassenger(Passenger& passenger) 
 {
+    bool timedOut;
     std::chrono::time_point<std::chrono::steady_clock> startTime;
 
-    occupyGate(startTime);
+    occupyGate(startTime, timedOut);
     auto endTime = std::chrono::steady_clock::now();
     auto waitingTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+
+    if (timedOut)
+    {
+        std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
+            << ", waited TOO LONG." << "Redirected to golden gate."
+            << "Waiting time: " << waitingTime << " ms" << std::endl;
+
+        runway_->addPassengersPastGates(1);
+        releaseGate();
+        passengerCount_++;
+
+        return;
+    }
 
     std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
         << ", assigned to gate " << Utils::addBrackets(id_)

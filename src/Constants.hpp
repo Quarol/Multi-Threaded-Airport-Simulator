@@ -9,6 +9,6 @@ public:
     static constexpr int CHECKIN_TIME = 2;
     static constexpr int MAX_WAIT_TIME = 20;
 
-    static constexpr int PASSENGERS_PER_PLANE = 2;
+    static constexpr int PASSENGERS_PER_PLANE = 100;
     static constexpr int PLANE_START_TIME = 10;
 };
