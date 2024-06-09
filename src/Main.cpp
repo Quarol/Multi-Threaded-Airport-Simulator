@@ -72,6 +72,20 @@ void addPlanes(int numberOfPlanes)
     }
 }
 
+void setAttack(bool underAttack)
+{
+    runway->setIsUnderAttack(underAttack);
+    for (auto& gate : gates)
+    {
+        gate.setIsUnderAttack(underAttack);
+    }
+
+    if (underAttack)
+        std::cout << "ATTACK ON GOING!!!" << std::endl;
+    else
+        std::cout << "ATTACK HAS ENDED!!!" << std::endl;
+}
+
 int main()
 {
     int numberOfPassengers;
@@ -93,27 +107,24 @@ int main()
         switch (input[0])
         {
             case 'p':
+                if (input.length() == 1)
+                    break;
+
                 numberOfPassengers = std::stoi(input.substr(1, input.length() - 1));
                 std::thread(addPassengers, numberOfPassengers).detach();
                 break;
 
             case 'a':
+                if (input.length() == 1)
+                    break;
+
                 numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
                 std::thread(addPlanes, numberOfPlanes).detach();
                 break;
 
             case 'x':
                 underAttack = !underAttack;
-                runway->setIsUnderAttack(underAttack);
-                for (auto& gate : gates)
-                {
-                    gate.setIsUnderAttack(underAttack);
-                }
-
-                if (underAttack)
-                    std::cout << "ATTACK ON GOING!!!" << std::endl;
-                else
-                    std::cout << "ATTACK HAS ENDED!!!" << std::endl;
+                std::thread(setAttack, underAttack).detach();
                 break;
         }
     }
