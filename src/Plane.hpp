@@ -18,7 +18,6 @@ public:
 private:
     int id_;
     int passengerCount_;
-    bool readyToStart_;
 
     std::shared_ptr<Runway> runway_;
 };

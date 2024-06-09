@@ -12,10 +12,14 @@ public:
 	void movePassengersToPlane(int numberOfPassenger);
 	int getPassengersPastGates();
 
+public:
+	void setIsUnderAttack(bool underAttack);
+
 private:
 	int id_;
 	int passengersPastGates_;
 	bool isAvailable_;
+	bool isUnderAttack_;
 
 	std::mutex runwayMutex_;
 	std::condition_variable runwayAvailableCV_;

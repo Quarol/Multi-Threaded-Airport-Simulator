@@ -7,13 +7,11 @@
 Plane::Plane()
     : id_(1)
     , passengerCount_(0)
-    , readyToStart_(false)
 {}
 
 Plane::Plane(int id)
     : id_(id)
     , passengerCount_(0)
-    , readyToStart_(false)
 {}
 
 void Plane::start(std::shared_ptr<Runway> runway)

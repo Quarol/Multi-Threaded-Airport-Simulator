@@ -18,6 +18,7 @@ public:
 public:
     void setId(int id);
     void setRunway(std::shared_ptr<Runway> runway);
+    void setIsUnderAttack(bool underAttack);
 
     std::mutex& getMutex();
     std::shared_ptr<Runway> getRunway();
@@ -30,6 +31,7 @@ private:
     int id_;
     int passengerCount_;
     bool isAvailable_;
+    bool isUnderAttack_;
 
     std::shared_ptr<Runway> runway_;
     std::mutex gateMutex_;

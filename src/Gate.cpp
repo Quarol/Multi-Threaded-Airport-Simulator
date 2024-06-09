@@ -14,6 +14,7 @@ Gate::Gate()
     : id_(1)
     , isAvailable_(true)
     , passengerCount_(0)
+    , isUnderAttack_(false)
 {}
 
 void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime, bool& timedOut) 
@@ -49,6 +50,7 @@ void Gate::assignPassenger(Passenger& passenger)
     auto endTime = std::chrono::steady_clock::now();
     auto waitingTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
+    while (isUnderAttack_);
     if (timedOut)
     {
         std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
@@ -97,4 +99,13 @@ int Gate::getPassengerCount()
 std::shared_ptr<Runway> Gate::getRunway()
 {
     return runway_;
+}
+
+void Gate::setIsUnderAttack(bool underAttack)
+{
+    isUnderAttack_ = underAttack;
+    if (isUnderAttack_)
+        std::cout << "Gate " << Utils::addBrackets(id_) << " has been stopped due to ongoing ATTACK!" << std::endl;
+    else
+        std::cout << "Gate " << Utils::addBrackets(id_) << " has been resumed due to the end of the ATTACK!" << std::endl;
 }

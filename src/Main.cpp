@@ -76,6 +76,7 @@ int main()
 {
     int numberOfPassengers;
     int numberOfPlanes;
+    bool underAttack = false;
 
     int nextId = 0;
     for (auto& gate : gates)
@@ -99,6 +100,20 @@ int main()
             case 'a':
                 numberOfPlanes = std::stoi(input.substr(1, input.length() - 1));
                 std::thread(addPlanes, numberOfPlanes).detach();
+                break;
+
+            case 'x':
+                underAttack = !underAttack;
+                runway->setIsUnderAttack(underAttack);
+                for (auto& gate : gates)
+                {
+                    gate.setIsUnderAttack(underAttack);
+                }
+
+                if (underAttack)
+                    std::cout << "ATTACK ON GOING!!!" << std::endl;
+                else
+                    std::cout << "ATTACK HAS ENDED!!!" << std::endl;
                 break;
         }
     }
