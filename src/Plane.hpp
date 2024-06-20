@@ -13,7 +13,6 @@ public:
     Plane(int id);
 
     void start(std::shared_ptr<Runway> runway);
-    void land();
 
 private:
     int id_;

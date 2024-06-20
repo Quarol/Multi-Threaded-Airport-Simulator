@@ -2,7 +2,10 @@
 #include "Runway.hpp"
 
 #include <iostream>
+#include <thread>
+#include <ncurses.h>
 
+#include "Output.hpp"
 #include "Utils.hpp"
 
 Runway::Runway(int id)
@@ -20,7 +23,7 @@ void Runway::addPassengersPastGates(int numberOfPassengers)
 }
 
 void Runway::movePassengersToPlane(int numberOfPassengers)
-{
+{	
 	std::unique_lock<std::mutex> lock(runwayMutex_);
 	runwayAvailableCV_.wait(lock, 
 		[this, numberOfPassengers]() 
@@ -30,8 +33,13 @@ void Runway::movePassengersToPlane(int numberOfPassengers)
 
 	passengersPastGates_ -= numberOfPassengers;
 
-	std::cout << "Moved: " << numberOfPassengers << " passengers from runway to plane" 
-		<< ", Remaining: " << passengersPastGates_ << std::endl;
+	/*
+	OutputHandler::writeMessage(
+		"Moved: " + std::to_string(numberOfPassengers) + " passengers from runway to plane" +
+		", Remaining: " + std::to_string(passengersPastGates_) + "\n"
+	);
+	*/
+	
 	runwayAvailableCV_.notify_all();
 }
 
@@ -43,8 +51,10 @@ int Runway::getPassengersPastGates()
 void Runway::setIsUnderAttack(bool underAttack)
 {
 	isUnderAttack_ = underAttack;
+	/*
 	if (isUnderAttack_)
-		std::cout << "Runway has been stopped due to ongoing ATTACK!" << std::endl;
+		OutputHandler::writeMessage("Runway has been stopped due to ongoing ATTACK!\n");
 	else
-		std::cout << "Runway has been resumed due to the end of the ATTACK!" << std::endl;
+		OutputHandler::writeMessage("Runway has been resumed due to the end of the ATTACK!\n");
+	*/
 }

@@ -9,6 +9,7 @@
 
 #include "Constants.hpp"
 #include "Utils.hpp"
+#include "Output.hpp"
 
 Gate::Gate()
     : id_(1)
@@ -19,7 +20,6 @@ Gate::Gate()
 
 void Gate::occupyGate(std::chrono::time_point<std::chrono::steady_clock>& startTime, bool& timedOut) 
 {
-    //std::this_thread::sleep_for(std::chrono::seconds(Utils::generateRandomNumber()));
     std::unique_lock<std::mutex> lock(gateMutex_);
 
     startTime = std::chrono::steady_clock::now();
@@ -43,6 +43,8 @@ void Gate::releaseGate()
 
 void Gate::assignPassenger(Passenger& passenger) 
 {
+    std::string message;
+
     bool timedOut;
     std::chrono::time_point<std::chrono::steady_clock> startTime;
 
@@ -53,25 +55,32 @@ void Gate::assignPassenger(Passenger& passenger)
     while (isUnderAttack_);
     if (timedOut)
     {
-        std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
-            << ", waited TOO LONG." << "Redirected to golden gate."
-            << "Waiting time: " << waitingTime << " ms" << std::endl;
+        /*
+        message = "Passenger " + Utils::addBrackets(passenger.getName()) +
+                ", waited TOO LONG." + "Redirected to golden gate." +
+                "Waiting time: " + std::to_string(waitingTime) + " ms\n";
+        OutputHandler::writeMessage(message);
+        */
 
+        OutputHandler::addPeoplePastGates(1);
         runway_->addPassengersPastGates(1);
         releaseGate();
         passengerCount_++;
 
         return;
     }
-
-    std::cout << "Passenger " << Utils::addBrackets(passenger.getName())
-        << ", assigned to gate " << Utils::addBrackets(id_)
-        << ", waited for: " << waitingTime << " ms" << std::endl;
+    
+    /*
+    message = "Passenger " + Utils::addBrackets(passenger.getName()) +
+        ", assigned to gate " + Utils::addBrackets(id_) +
+        ", waited for: " + std::to_string(waitingTime) + " ms\n";
+    OutputHandler::writeMessage(message);
+    */
 
     std::this_thread::sleep_for(std::chrono::seconds(Constants::CHECKIN_TIME));
 
+    OutputHandler::addPeoplePastGates(1);
     runway_->addPassengersPastGates(1);
-
     releaseGate();
     passengerCount_++;
 }
@@ -104,8 +113,14 @@ std::shared_ptr<Runway> Gate::getRunway()
 void Gate::setIsUnderAttack(bool underAttack)
 {
     isUnderAttack_ = underAttack;
+    std::string message;
+
+    /*
     if (isUnderAttack_)
-        std::cout << "Gate " << Utils::addBrackets(id_) << " has been stopped due to ongoing ATTACK!" << std::endl;
+        message = "Gate " + Utils::addBrackets(id_) + " has been stopped due to ongoing ATTACK!\n";
     else
-        std::cout << "Gate " << Utils::addBrackets(id_) << " has been resumed due to the end of the ATTACK!" << std::endl;
+        message = "Gate " + Utils::addBrackets(id_) + " has been resumed due to the end of the ATTACK!\n";
+
+    OutputHandler::writeMessage(message);
+    */
 }

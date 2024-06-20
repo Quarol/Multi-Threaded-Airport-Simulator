@@ -3,6 +3,7 @@
 #include "Runway.hpp"
 #include "Constants.hpp"
 #include "Utils.hpp"
+#include "Output.hpp"
 
 Plane::Plane()
     : id_(1)
@@ -16,24 +17,18 @@ Plane::Plane(int id)
 
 void Plane::start(std::shared_ptr<Runway> runway)
 {
+    std::string message;
     runway_ = runway;
 
-    while (true) 
-    {
-        runway_->movePassengersToPlane(Constants::PASSENGERS_PER_PLANE);
+    runway_->movePassengersToPlane(Constants::PASSENGERS_PER_PLANE);
 
-        std::cout << "Plane " << Utils::addBrackets(id_)
-            << " is starting with: " << Constants::PASSENGERS_PER_PLANE << " passengers." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(Constants::PLANE_START_TIME));
+    OutputHandler::adjustAfterFlight();
 
-        std::this_thread::sleep_for(std::chrono::seconds(Constants::PLANE_START_TIME));
-
-        land();
-    }
+    /*
+    message = "Plane " + Utils::addBrackets(id_) +
+        " is starting with: " + std::to_string(Constants::PASSENGERS_PER_PLANE) + " passengers.\n";
+    OutputHandler::writeMessage(message);
+    */
+    //OutputHandler::writeMessage("Plane " + Utils::addBrackets(id_) + " has landed\n");
 }
-
-void Plane::land()
-{
-    std::cout << "Plane " << Utils::addBrackets(id_)  
-        << " has landed" << std::endl;
-}
-

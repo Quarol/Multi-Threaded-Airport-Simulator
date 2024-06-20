@@ -8,6 +8,6 @@ namespace Constants
     constexpr int CHECKIN_TIME = 2;
     constexpr int MAX_WAIT_TIME = 20;
 
-    constexpr int PASSENGERS_PER_PLANE = 40;
-    constexpr int PLANE_START_TIME = 10;
+    constexpr int PASSENGERS_PER_PLANE = 10;
+    constexpr int PLANE_START_TIME = 1;
 }
